@@ -9,6 +9,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import javax.sql.DataSource;
 import java.util.Objects;
@@ -17,10 +20,15 @@ import java.util.Objects;
 @ComponentScan("org.todotask")
 @PropertySource("classpath:application.properties")
 @EnableWebMvc
-public class WebMvcApplicationConfig {
+public class WebMvcApplicationConfig implements WebMvcConfigurer {
 
     @Autowired
     private Environment env;
+
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        registry.enableContentNegotiation(new MappingJackson2JsonView());
+    }
 
     @Bean
     public DataSource dataSource() {
