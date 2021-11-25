@@ -2,28 +2,27 @@ package org.todotask.service;
 
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.todotask.dao.UserDao;
 import org.todotask.model.User;
-import org.todotask.utils.HashingPasswordUtil;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class UserService {
 
     private UserDao userDao;
-    private HashingPasswordUtil hashingPasswordUtil;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserDao userDao, HashingPasswordUtil hashingPasswordService) {
+    public UserService(UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
-        this.hashingPasswordUtil = hashingPasswordService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getAllUsers() {
@@ -35,13 +34,13 @@ public class UserService {
     }
 
     public void createUser(User user) {
-        String hashPassword = hashingPasswordUtil.getHashPassword(user.getPassword());
+        String hashPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
         userDao.create(user);
     }
 
     @SneakyThrows
-    public void uploadFile(MultipartFile file) {
+    public void uploadImage(MultipartFile file) {
         String path = "src/main/resources/static/images/" + file.getOriginalFilename();
         Path p = Path.of(path);
         byte[] bytes = file.getBytes();
