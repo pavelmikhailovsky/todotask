@@ -3,15 +3,11 @@ package org.todotask.config;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -25,9 +21,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Configuration
-@ComponentScan("org.todotask")
+@ComponentScan(basePackages = {"org.springdoc", "org.todotask"})
 @PropertySource("classpath:application.properties")
 @EnableWebMvc
+@Import({org.springdoc.core.SpringDocConfiguration.class,
+        org.springdoc.webmvc.core.SpringDocWebMvcConfiguration.class,
+        org.springdoc.webmvc.ui.SwaggerConfig.class,
+        org.springdoc.core.SwaggerUiConfigProperties.class,
+        org.springdoc.core.SwaggerUiOAuthProperties.class,
+        org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration.class})
 public class WebMvcApplicationConfig implements WebMvcConfigurer {
 
     @Autowired
@@ -53,13 +55,13 @@ public class WebMvcApplicationConfig implements WebMvcConfigurer {
         return new JdbcTemplate(dataSource());
     }
 
-    @Bean
-    public GroupedOpenApi publicUserApi() {
-        return GroupedOpenApi.builder()
-                .group("Users")
-                .pathsToMatch("/user/**")
-                .build();
-    }
+//    @Bean
+//    public GroupedOpenApi publicUserApi() {
+//        return GroupedOpenApi.builder()
+//                .group("User")
+//                .pathsToMatch("/user/**")
+//                .build();
+//    }
 
     @Bean
     public OpenAPI customOpenApi(@Value("${openapi.application-description}")String appDescription,
@@ -67,13 +69,9 @@ public class WebMvcApplicationConfig implements WebMvcConfigurer {
         return new OpenAPI().info(new Info().title("TODOTASK API")
                         .version(appVersion)
                         .description(appDescription)
-                        .license(new License().name("Apache 2.0")
-                                .url("http://springdoc.org"))
-                        .contact(new Contact().name("username")
-                                .email("test@gmail.com")))
-                .servers(List.of(new Server().url("http://localhost:8080")
-                                .description("Dev service"),
-                        new Server().url("http://localhost:8082")
-                                .description("Beta service")));
+                        .contact(new Contact().name("dev")
+                                .email("todotask@gmail.com")))
+                .servers(List.of(new Server().url("http://localhost:8080/api/v1/")
+                                .description("Dev service")));
     }
 }
