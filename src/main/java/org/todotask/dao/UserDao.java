@@ -43,4 +43,18 @@ public class UserDao implements DataAccessObject<User> {
                 user.getUsername(), user.getPassword()
         );
     }
+
+    @Override
+    public void delete(Long id) {
+
+    }
+
+    @Override
+    @SneakyThrows
+    public User getInstanceByName(String name) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE username = ?",
+                new BeanPropertyRowMapper<>(User.class),
+                name
+        ).stream().findAny().orElseThrow(() -> new SQLDataException("username or password not match"));
+    }
 }
