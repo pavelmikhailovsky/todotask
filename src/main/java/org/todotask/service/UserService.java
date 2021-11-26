@@ -18,14 +18,17 @@ public class UserService {
 
     private UserDao userDao;
     private PasswordEncoder passwordEncoder;
+    private TokenService tokenService;
 
     @Autowired
-    public UserService(UserDao userDao, PasswordEncoder passwordEncoder) {
+    public UserService(UserDao userDao, PasswordEncoder passwordEncoder, TokenService tokenService) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers(String authorizationHeader) {
+        String subject = tokenService.getTokenSubject(authorizationHeader);
         return userDao.getAll();
     }
 
@@ -33,10 +36,11 @@ public class UserService {
         return userDao.getById(id);
     }
 
-    public void createUser(User user) {
+    public String createUser(User user) {
         String hashPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
         userDao.create(user);
+        return tokenService.getToken(user.getUsername());
     }
 
     @SneakyThrows
@@ -45,5 +49,17 @@ public class UserService {
         Path p = Path.of(path);
         byte[] bytes = file.getBytes();
         Files.write(p, bytes, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+    }
+
+    public String login(String username, String password) throws ValuesNotMatchException {
+        User user = userDao.getInstanceByName(username);
+        String s = user.getPassword();
+        boolean match = passwordEncoder.matches(password, s);
+
+        if(!match) {
+            throw new ValuesNotMatchException("username or password not match");
+        }
+
+        return tokenService.getToken(user.getUsername());
     }
 }
