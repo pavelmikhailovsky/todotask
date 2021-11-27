@@ -17,6 +17,7 @@ import org.todotask.service.UserService;
 import org.todotask.service.ValuesNotMatchException;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "User", description = "The User API")
 @RestController
@@ -57,8 +58,9 @@ public class UserController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public String createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public Map<String, String> createUser(@RequestBody User user) {
+        String token = userService.createUser(user);
+        return Map.of("token", token);
     }
 
     @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -69,8 +71,9 @@ public class UserController {
 
     @GetMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public String login(@RequestParam("username") String username,
-                        @RequestParam("password") String password) throws ValuesNotMatchException {
-        return userService.login(username, password);
+    public Map<String, String> login(@RequestParam("username") String username,
+                                     @RequestParam("password") String password) throws ValuesNotMatchException {
+        String token = userService.login(username, password);
+        return Map.of("token", token);
     }
 }
