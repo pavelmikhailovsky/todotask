@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.todotask.dao.DataAccessObject;
 import org.todotask.dao.UserDao;
 import org.todotask.model.User;
 
@@ -16,30 +17,30 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private UserDao userDao;
+    private DataAccessObject<User> dataAccessObject;
     private PasswordEncoder passwordEncoder;
     private TokenService tokenService;
 
     @Autowired
     public UserService(UserDao userDao, PasswordEncoder passwordEncoder, TokenService tokenService) {
-        this.userDao = userDao;
+        this.dataAccessObject = userDao;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
     }
 
     public List<User> getAllUsers(String authorizationHeader) {
         String subject = tokenService.getTokenSubject(authorizationHeader);
-        return userDao.getAll();
+        return dataAccessObject.getAll();
     }
 
     public User getByIdUser(Long id) {
-        return userDao.getById(id);
+        return dataAccessObject.getById(id);
     }
 
     public String createUser(User user) {
         String hashPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
-        userDao.create(user);
+        dataAccessObject.create(user);
         return tokenService.getToken(user.getUsername());
     }
 
@@ -52,7 +53,7 @@ public class UserService {
     }
 
     public String login(String username, String password) throws ValuesNotMatchException {
-        User user = userDao.getInstanceByName(username);
+        User user = dataAccessObject.getInstanceByName(username);
         String s = user.getPassword();
         boolean match = passwordEncoder.matches(password, s);
 
