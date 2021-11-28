@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.todotask.model.User;
 import org.todotask.service.UserService;
+import org.todotask.service.UserServiceImp;
 import org.todotask.service.ValuesNotMatchException;
 
 import java.util.List;
@@ -27,8 +28,8 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserServiceImp userServiceImp) {
+        this.userService = userServiceImp;
     }
 
     @Operation(summary = "Gets all users", tags = "user")
