@@ -12,7 +12,6 @@ public class User {
     private String password;
     private String image;
     private String createAt;
-    private boolean isCompleted;
 
     public User() {}
 
@@ -21,13 +20,6 @@ public class User {
         this.password = password;
     }
 
-    public boolean getIsCompleted() {
-        return isCompleted;
-    }
-
-    public void setIsCompleted(boolean completed) {
-        this.isCompleted = completed;
-    }
 
     public String getPassword() {
         return password;
