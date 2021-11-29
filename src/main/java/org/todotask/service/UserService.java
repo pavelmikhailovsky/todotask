@@ -13,7 +13,7 @@ public interface UserService {
 
     String createUser(User user);
 
-    void uploadImage(MultipartFile file);
+    void uploadImage(MultipartFile file, String authorizationHeader);
 
     String login(String username, String password) throws ValuesNotMatchException;
 }

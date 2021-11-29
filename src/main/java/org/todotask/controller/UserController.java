@@ -66,8 +66,9 @@ public class UserController {
 
     @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void uploadImage(@RequestParam("file") MultipartFile file) {
-        userService.uploadImage(file);
+    public void uploadImage(@RequestParam("file") MultipartFile file,
+                            @RequestHeader("Authorization") String authorizationHeader) {
+        userService.uploadImage(file, authorizationHeader);
     }
 
     @GetMapping("/login")
@@ -77,4 +78,6 @@ public class UserController {
         String token = userService.login(username, password);
         return Map.of("token", token);
     }
+
+    // TODO create endpoint with exception: SignatureException, ValuesNotMatchException, SQLDataException and etc
 }

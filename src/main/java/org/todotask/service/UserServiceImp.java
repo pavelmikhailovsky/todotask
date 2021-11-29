@@ -45,11 +45,21 @@ public class UserServiceImp implements UserService {
     }
 
     @SneakyThrows
-    public void uploadImage(MultipartFile file) {
-        String path = "src/main/resources/static/images/" + file.getOriginalFilename();
-        Path p = Path.of(path);
+    public void uploadImage(MultipartFile file, String authorizationHeader) {
+        String usernameFromToken = tokenService.getTokenSubject(authorizationHeader);
+        User user = dataAccessObject.getInstanceByName(usernameFromToken);
+        String pathToUserDirectory = "src/main/resources/static/images/" + user.getUsername() + "/";
+
+        if(!Files.isDirectory(Path.of(pathToUserDirectory))) {
+             Files.createDirectories(Path.of(pathToUserDirectory));
+        }
+
+        Path path = Path.of(pathToUserDirectory + file.getOriginalFilename());
         byte[] bytes = file.getBytes();
-        Files.write(p, bytes, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        Files.write(path, bytes, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+
+        user.setImage(pathToUserDirectory + file.getOriginalFilename());
+        dataAccessObject.update(user);
     }
 
     public String login(String username, String password) throws ValuesNotMatchException {

@@ -12,5 +12,7 @@ public interface DataAccessObject<T> {
 
     void delete(Long id);
 
+    void update(T t);
+
     default T getInstanceByName(String name) {return null;}
 }

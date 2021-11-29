@@ -50,6 +50,14 @@ public class UserDao implements DataAccessObject<User> {
     }
 
     @Override
+    public void update(User user) {
+        jdbcTemplate.update(
+                "UPDATE users SET image = ? WHERE user_id = ?",
+                user.getImage(), user.getUserId()
+        );
+    }
+
+    @Override
     @SneakyThrows
     public User getInstanceByName(String name) {
         return jdbcTemplate.query("SELECT * FROM users WHERE username = ?",
