@@ -9,6 +9,7 @@ import org.todotask.dao.DataAccessObject;
 import org.todotask.dao.UserDao;
 import org.todotask.model.User;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -72,5 +73,12 @@ public class UserServiceImp implements UserService {
         }
 
         return tokenService.getToken(user.getUsername());
+    }
+
+    public byte[] getImage(String authorizationHeader) throws IOException {
+        String usernameFromToken = tokenService.getTokenSubject(authorizationHeader);
+        User user = dataAccessObject.getInstanceByName(usernameFromToken);
+
+        return Files.readAllBytes(Path.of(user.getImage()));
     }
 }
