@@ -20,6 +20,9 @@ public class User {
         this.password = password;
     }
 
+    public static User getInstance(String username, String password) {
+        return new User(username, password);
+    }
 
     public String getPassword() {
         return password;
