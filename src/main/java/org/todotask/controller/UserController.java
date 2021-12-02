@@ -30,12 +30,15 @@ public class UserController {
 
     private UserService userService;
 
+    private static final String SCHEMA_DEFAULT_VALUE_MESSAGE = "{\"message\": \"string\"}";
+    private static final String SCHEMA_DEFAULT_VALUE_TOKEN = "{\"token\": \"string\"}";
+
     @Autowired
     public UserController(UserServiceImp userServiceImp) {
         this.userService = userServiceImp;
     }
 
-    @Operation(summary = "Gets all users", tags = "user")
+    @Operation(summary = "Gets all users", tags = "user", deprecated = true)
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -58,11 +61,11 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Founds users by id",
+                    description = "Returned instance user by id",
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class))
+                                    schema = @Schema(implementation = User.class)
                             )
                     }
             ),
@@ -72,7 +75,7 @@ public class UserController {
                     content = {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema())
+                                    schema = @Schema(defaultValue = SCHEMA_DEFAULT_VALUE_MESSAGE)
                             )
                     }
             )
@@ -83,35 +86,55 @@ public class UserController {
         return userService.getByIdUser(id);
     }
 
-    @Operation(summary = "Gets all users", tags = "user")
+    @Operation(summary = "Create user with unique username", tags = "user")
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200",
-                    description = "Founds all users",
+                    responseCode = "201",
+                    description = "Returned a token for authorization",
                     content = {
                             @Content(
-                                    mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class))
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(defaultValue = SCHEMA_DEFAULT_VALUE_TOKEN)
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Token is not found",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(defaultValue = SCHEMA_DEFAULT_VALUE_MESSAGE)
                             )
                     }
             )
     })
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, String> createUser(@RequestBody User user) {
-        String token = userService.createUser(user);
+    public Map<String, String> createUser(@RequestParam("username") String username,
+                                          @RequestParam("password") String password) {
+        String token = userService.createUser(User.getInstance(username, password));
         return Map.of("token", token);
     }
 
-    @Operation(summary = "Gets all users", tags = "user")
+    @Operation(summary = "Upload image for current user", tags = "user")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Founds all users",
+                    description = "Return status code",
                     content = {
                             @Content(
-                                    mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class))
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Return a message with an exception",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(defaultValue = SCHEMA_DEFAULT_VALUE_MESSAGE)
                             )
                     }
             )
@@ -123,15 +146,25 @@ public class UserController {
         userService.uploadImage(file, authorizationHeader);
     }
 
-    @Operation(summary = "Gets all users", tags = "user")
+    @Operation(summary = "Login users", tags = "user")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Founds all users",
+                    description = "Return token on successful login",
                     content = {
                             @Content(
-                                    mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class))
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(defaultValue = SCHEMA_DEFAULT_VALUE_TOKEN)
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Incorrect login details",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(defaultValue = SCHEMA_DEFAULT_VALUE_MESSAGE)
                             )
                     }
             )
@@ -144,15 +177,24 @@ public class UserController {
         return Map.of("token", token);
     }
 
-    @Operation(summary = "Gets all users", tags = "user")
+    @Operation(summary = "Gets image for current user", tags = "user")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Founds all users",
+                    description = "Return bytes for an image",
                     content = {
                             @Content(
-                                    mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class))
+                                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid authorization header",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(defaultValue = SCHEMA_DEFAULT_VALUE_MESSAGE)
                             )
                     }
             )
