@@ -6,6 +6,10 @@ import org.objectweb.asm.FieldVisitor;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.V17;
 
+/**
+ *Not deleted because the plans were to substitute the created class in
+ *runtime for auto-documentation into the annotation @Schema
+ **/
 public class ApiResponseContentSchema {
 
     public static Class<?> getNewClassWithField(String fieldName) {

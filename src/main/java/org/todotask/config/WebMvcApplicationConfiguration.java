@@ -14,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+import org.todotask.config.beanpostprocessor.BeanPostProcessorImp;
 
 import java.util.List;
 
@@ -33,6 +34,15 @@ public class WebMvcApplicationConfiguration implements WebMvcConfigurer {
     public void configureViewResolvers(ViewResolverRegistry registry) {
         registry.enableContentNegotiation(new MappingJackson2JsonView());
     }
+
+    /**
+    *Not deleted because the plans were to substitute the created class in
+    *runtime for auto-documentation into the annotation @Schema
+    **/
+//    @Bean
+//    public BeanPostProcessorImp beanPostProcessorImp() {
+//        return new BeanPostProcessorImp();
+//    }
 
     @Bean
     public CommonsMultipartResolver multipartResolver() {
