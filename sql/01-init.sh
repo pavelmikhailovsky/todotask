@@ -13,12 +13,12 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
       create_at TIMESTAMP NOT NULL DEFAULT NOW()
 	  );
 	  CREATE TABLE IF NOT EXISTS todo(
-        todo_id BIGSERIAL PRIMARY KEY,
-        user_id INTEGER NOT NULL,
-        text VARCHAR(5000) UNIQUE,
-        create_at TIMESTAMP NOT NULL DEFAULT NOW(),
-        is_completed BOOLEAN DEFAULT false,
-        FOREIGN KEY (user_id) REFERENCES users (user_id)
+      todo_id BIGSERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      text VARCHAR(5000) UNIQUE,
+      create_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      is_completed BOOLEAN DEFAULT false,
+      FOREIGN KEY (user_id) REFERENCES users (user_id)
     );
   COMMIT;
 EOSQL
