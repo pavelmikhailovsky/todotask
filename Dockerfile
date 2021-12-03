@@ -8,4 +8,3 @@ COPY pom.xml ./
 RUN mvn clean package
 COPY src ./src
 
-CMD ["mvn", "cargo:run"]
