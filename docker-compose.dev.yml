@@ -1,9 +1,10 @@
-version: '3.3'
+version: '3.4'
 services:
   todotask:
     container_name: todotask
     build:
       context: .
+      target: development
     ports:
       - 8000:8000
       - 8080:8080
