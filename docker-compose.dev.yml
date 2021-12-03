@@ -9,23 +9,32 @@ services:
       - 8080:8080
     environment:
       - SERVER_PORT=8080
-      - POSTGRESQL_URL=jdbc:postgresql://localhost:5432/todotask
+      - DATABASE_URL=jdbc:postgresql://postgresql:5432/todotask
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+    depends_on:
+      - postgresqlserver
     volumes:
       - ./:/app
-    command: mvn cargo:run
+    command: mvn cargo:run -Drun.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
 
   postgresqlserver:
     container_name: postgresql
     image: postgres:13.5-alpine
-    ports:
-      - 3306:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
     environment:
-      - POSTGRES_USER=pavel
-      - POSTGRES_PASSWORD=pavel
-      - POSTGRES_DB=todotask
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - APP_DB_NAME=todotask
     volumes:
       - postgres_data:/var/lib/postgresql
       - postgres_config:/etc/postgresql/13/main/conf.d
+      - ./sql:/docker-entrypoint-initdb.d/
 volumes:
   postgres_data:
   postgres_config:
