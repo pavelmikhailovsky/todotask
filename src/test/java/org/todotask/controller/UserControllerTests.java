@@ -49,10 +49,11 @@ public class UserControllerTests {
 
     @Test
     void checkSuccessCreateUsers() throws Exception {
-        Map<String, String> user = Map.of("username", "user4", "password", "user");
-        String json = new ObjectMapper().writeValueAsString(user);
+        MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
+        param.add("username", "user4");
+        param.add("password", "user");
         mockMvc.perform(
-                post("/user/create").contentType(MediaType.APPLICATION_JSON).content(json)
+                post("/user/create").contentType(MediaType.APPLICATION_JSON).params(param)
                 )
                 .andDo(print())
                 .andExpectAll(
