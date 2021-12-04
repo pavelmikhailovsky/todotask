@@ -33,9 +33,9 @@ services:
       - POSTGRES_PASSWORD=postgres
       - APP_DB_NAME=todotask
     volumes:
-      - postgres_data:/var/lib/postgresql
-      - postgres_config:/etc/postgresql/13/main/conf.d
+      - todotask_postgres_data:/var/lib/postgresql
+      - todotask_postgres_config:/etc/postgresql/13/main/conf.d
       - ./sql:/docker-entrypoint-initdb.d/
 volumes:
-  postgres_data:
-  postgres_config:
+  todotask_postgres_data:
+  todotask_postgres_config:
