@@ -8,6 +8,11 @@ import java.util.List;
 
 public interface UserService {
 
+    /**
+     *
+     * Deprecated
+     */
+    @Deprecated
     List<User> getAllUsers(String authorizationHeader);
 
     User getByIdUser(Long id);
@@ -17,6 +22,4 @@ public interface UserService {
     void uploadImage(MultipartFile file, String authorizationHeader);
 
     byte[] getImage(String authorizationHeader) throws IOException;
-
-    String login(String username, String password) throws ValuesNotMatchException;
 }
