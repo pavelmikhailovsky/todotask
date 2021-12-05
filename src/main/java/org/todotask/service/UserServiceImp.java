@@ -51,8 +51,8 @@ public class UserServiceImp implements UserService {
         User user = dataAccessObject.getInstanceByName(usernameFromToken);
         String pathToUserDirectory = "src/main/resources/static/images/" + user.getUsername() + "/";
 
-        if(!Files.isDirectory(Path.of(pathToUserDirectory))) {
-             Files.createDirectories(Path.of(pathToUserDirectory));
+        if (!Files.isDirectory(Path.of(pathToUserDirectory))) {
+            Files.createDirectories(Path.of(pathToUserDirectory));
         }
 
         Path path = Path.of(pathToUserDirectory + file.getOriginalFilename());
@@ -68,7 +68,7 @@ public class UserServiceImp implements UserService {
         String s = user.getPassword();
         boolean match = passwordEncoder.matches(password, s);
 
-        if(!match) {
+        if (!match) {
             throw new ValuesNotMatchException("username or password not match");
         }
 
