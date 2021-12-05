@@ -18,6 +18,8 @@ import org.todotask.service.UserService;
 import org.todotask.service.UserServiceImp;
 import org.todotask.service.ValuesNotMatchException;
 
+import static org.todotask.controller.SchemaDefaultValue.*;
+
 import java.io.IOException;
 import java.sql.SQLDataException;
 import java.util.List;
@@ -29,9 +31,6 @@ import java.util.Map;
 public class UserController {
 
     private UserService userService;
-
-    private static final String SCHEMA_DEFAULT_VALUE_MESSAGE = "{\"message\": \"string\"}";
-    private static final String SCHEMA_DEFAULT_VALUE_TOKEN = "{\"token\": \"string\"}";
 
     @Autowired
     public UserController(UserServiceImp userServiceImp) {
