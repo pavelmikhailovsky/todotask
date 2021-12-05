@@ -17,6 +17,8 @@ import org.todotask.model.User;
 import org.todotask.service.UserService;
 import org.todotask.service.UserServiceImp;
 import org.todotask.service.ValuesNotMatchException;
+import org.todotask.service.auth.UserAuthorization;
+import org.todotask.service.auth.UserAuthorizationImp;
 
 import static org.todotask.controller.SchemaDefaultValue.*;
 
@@ -31,10 +33,12 @@ import java.util.Map;
 public class UserController {
 
     private UserService userService;
+    private UserAuthorization userAuthorization;
 
     @Autowired
-    public UserController(UserServiceImp userServiceImp) {
+    public UserController(UserServiceImp userServiceImp, UserAuthorizationImp userAuthorization) {
         this.userService = userServiceImp;
+        this.userAuthorization = userAuthorization;
     }
 
     @Operation(summary = "Gets all users", tags = "user", deprecated = true)
@@ -172,7 +176,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public Map<String, String> login(@RequestParam("username") String username,
                                      @RequestParam("password") String password) throws ValuesNotMatchException {
-        String token = userService.login(username, password);
+        String token = userAuthorization.login(username, password);
         return Map.of("token", token);
     }
 

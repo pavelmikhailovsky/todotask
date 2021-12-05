@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface TodoService {
 
-    void createTodo(Long userId, String text);
+    void createTodo(String authorizationHeader, String text);
 
-    List<Todo> getAllTodoCurrentUser(Long userId);
+    List<Todo> getAllTodoCurrentUser(String authorizationHeader);
 
     void updateTodo(Long todoId, String text);
 

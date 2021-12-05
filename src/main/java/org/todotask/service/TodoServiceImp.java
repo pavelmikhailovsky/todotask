@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.todotask.dao.TodoDao;
 import org.todotask.model.Todo;
+import org.todotask.model.User;
+import org.todotask.service.auth.UserAuthorization;
+import org.todotask.service.auth.UserAuthorizationImp;
 
 import java.util.List;
 
@@ -11,20 +14,24 @@ import java.util.List;
 public class TodoServiceImp implements TodoService {
 
     private TodoDao todoDao;
+    private UserAuthorization userAuthorization;
 
     @Autowired
-    public TodoServiceImp(TodoDao todoDao) {
+    public TodoServiceImp(TodoDao todoDao, UserAuthorizationImp userAuthorization) {
         this.todoDao = todoDao;
+        this.userAuthorization = userAuthorization;
     }
 
     @Override
-    public void createTodo(Long userId, String text) {
-        todoDao.create(Todo.getInstance(userId, text));
+    public void createTodo(String authorizationHeader, String text) {
+        User user = userAuthorization.getUserByAuthorizationHeader(authorizationHeader);
+        todoDao.create(Todo.getInstance(user.getUserId(), text));
     }
 
     @Override
-    public List<Todo> getAllTodoCurrentUser(Long userId) {
-        return todoDao.getAll(userId);
+    public List<Todo> getAllTodoCurrentUser(String authorizationHeader) {
+        User user = userAuthorization.getUserByAuthorizationHeader(authorizationHeader);
+        return todoDao.getAll(user.getUserId());
     }
 
     @Override
