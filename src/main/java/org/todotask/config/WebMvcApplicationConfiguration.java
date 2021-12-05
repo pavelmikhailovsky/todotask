@@ -4,7 +4,6 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
-import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,7 +13,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
-import org.todotask.config.beanpostprocessor.BeanPostProcessorImp;
 
 import java.util.List;
 
@@ -53,14 +51,6 @@ public class WebMvcApplicationConfiguration implements WebMvcConfigurer {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-//    @Bean
-//    public GroupedOpenApi publicUserApi() {
-//        return GroupedOpenApi.builder()
-//                .group("User")
-//                .pathsToMatch("/user/**")
-//                .build();
-//    }
 
     @Bean
     public OpenAPI customOpenApi(@Value("${openapi.application-description}")String appDescription,

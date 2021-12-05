@@ -4,8 +4,6 @@ import java.util.List;
 
 public interface DataAccessObject<T> {
 
-    List<T> getAll();
-
     T getById(Long id);
 
     void create(T t);
@@ -13,6 +11,10 @@ public interface DataAccessObject<T> {
     void delete(Long id);
 
     void update(T t);
+
+    default List<T> getAll() {return null;}
+
+    default List<T> getAll(Long id) {return null;}
 
     default T getInstanceByName(String name) {return null;}
 }

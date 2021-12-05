@@ -1,4 +1,4 @@
-package org.todotask.service;
+package org.todotask.service.auth;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

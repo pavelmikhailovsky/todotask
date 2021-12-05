@@ -8,6 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.todotask.dao.DataAccessObject;
 import org.todotask.dao.UserDao;
 import org.todotask.model.User;
+import org.todotask.service.auth.TokenService;
+import org.todotask.service.auth.TokenServiceImp;
+import org.todotask.service.auth.UserAuthorization;
+import org.todotask.service.auth.UserAuthorizationImp;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,14 +25,22 @@ public class UserServiceImp implements UserService {
     private DataAccessObject<User> dataAccessObject;
     private PasswordEncoder passwordEncoder;
     private TokenService tokenService;
+    private UserAuthorization userAuthorization;
 
     @Autowired
-    public UserServiceImp(UserDao userDao, PasswordEncoder passwordEncoder, TokenServiceImp tokenServiceImp) {
+    public UserServiceImp(UserDao userDao, PasswordEncoder passwordEncoder,
+                          TokenServiceImp tokenServiceImp, UserAuthorizationImp userAuthorization) {
         this.dataAccessObject = userDao;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenServiceImp;
+        this.userAuthorization = userAuthorization;
     }
 
+    /**
+     *
+     * Deprecated
+     */
+    @Deprecated
     public List<User> getAllUsers(String authorizationHeader) {
         String subject = tokenService.getTokenSubject(authorizationHeader);
         return dataAccessObject.getAll();
@@ -47,8 +59,7 @@ public class UserServiceImp implements UserService {
 
     @SneakyThrows
     public void uploadImage(MultipartFile file, String authorizationHeader) {
-        String usernameFromToken = tokenService.getTokenSubject(authorizationHeader);
-        User user = dataAccessObject.getInstanceByName(usernameFromToken);
+        User user = userAuthorization.getUserByAuthorizationHeader(authorizationHeader);
         String pathToUserDirectory = "src/main/resources/static/images/" + user.getUsername() + "/";
 
         if (!Files.isDirectory(Path.of(pathToUserDirectory))) {
@@ -63,22 +74,8 @@ public class UserServiceImp implements UserService {
         dataAccessObject.update(user);
     }
 
-    public String login(String username, String password) throws ValuesNotMatchException {
-        User user = dataAccessObject.getInstanceByName(username);
-        String s = user.getPassword();
-        boolean match = passwordEncoder.matches(password, s);
-
-        if (!match) {
-            throw new ValuesNotMatchException("username or password not match");
-        }
-
-        return tokenService.getToken(user.getUsername());
-    }
-
     public byte[] getImage(String authorizationHeader) throws IOException {
-        String usernameFromToken = tokenService.getTokenSubject(authorizationHeader);
-        User user = dataAccessObject.getInstanceByName(usernameFromToken);
-
+        User user = userAuthorization.getUserByAuthorizationHeader(authorizationHeader);
         return Files.readAllBytes(Path.of(user.getImage()));
     }
 }

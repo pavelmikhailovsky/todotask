@@ -21,3 +21,9 @@ CREATE TABLE todo(
 INSERT INTO users(username, password) VALUES ('user1', 'user');
 INSERT INTO users(username, password) VALUES ('user2', 'user');
 INSERT INTO users(username, password) VALUES ('user3', 'user');
+
+INSERT INTO todo(user_id, text) VALUES (1, 'simple text');
+INSERT INTO todo(user_id, text) VALUES (1, 'simple text');
+INSERT INTO todo(user_id, text) VALUES (2, 'simple text');
+INSERT INTO todo(user_id, text) VALUES (3, 'simple text');
+INSERT INTO todo(user_id, text) VALUES (3, 'simple text');
