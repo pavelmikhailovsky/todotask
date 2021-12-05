@@ -181,10 +181,20 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Return bytes for an image",
+                    description = "Return the image if it exists",
                     content = {
                             @Content(
-                                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
+                                    mediaType = MediaType.IMAGE_JPEG_VALUE
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "The picture does not exist",
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(defaultValue = "{\"message\": \"string\"}")
                             )
                     }
             ),
@@ -199,7 +209,7 @@ public class UserController {
                     }
             )
     })
-    @GetMapping(value = "/get-image", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @GetMapping(value = "/get-image", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public byte[] getImage(@RequestHeader("Authorization") String authorizationHeader) throws IOException {
         return userService.getImage(authorizationHeader);
@@ -216,4 +226,8 @@ public class UserController {
     public Map<String, String> tokenException(Exception e) {
         return Map.of("message", "token is not valid");
     }
+
+    @ExceptionHandler({IOException.class})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void getImageException(Exception e) { }
 }
