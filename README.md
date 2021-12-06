@@ -1,6 +1,7 @@
 ***
 ### Project description
 ***This is the backend part of the todotask project.***
+***Todotask is a project for creating tasks for a day / week or any other time.***
 ***
 
 ### Launch the application:
@@ -15,13 +16,17 @@
 #### 3) Clone repository:
     git clone https://github.com/pavelmikhailovsky/todotask.git
 
-#### 4) Create docker image
+#### 4) Get permission to connect to the Docker for Linux
+    sudo chmod 666 /var/run/docker.sock
+    sudo usermod -aG docker ${USER}
+
+#### 5) Create docker image
     docker-compose -f docker-compose.dev.yml build
 
-#### 5) Run docker container
+#### 6) Run docker container
     docker-compose -f docker-compose.dev.yml up
 
-#### 6) Open a browser and enter
+#### 7) Open a browser and enter
     http://localhost:8080/api/v1/swagger-ui/index.html?url=/api/v1/v3/api-docs/
 
 ### Run tests:
