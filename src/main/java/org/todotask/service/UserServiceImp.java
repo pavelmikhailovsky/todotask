@@ -5,13 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.todotask.dao.DataAccessObject;
 import org.todotask.dao.UserDao;
 import org.todotask.model.User;
 import org.todotask.service.auth.TokenService;
-import org.todotask.service.auth.TokenServiceImp;
 import org.todotask.service.auth.UserAuthorization;
-import org.todotask.service.auth.UserAuthorizationImp;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,17 +19,17 @@ import java.util.List;
 @Service
 public class UserServiceImp implements UserService {
 
-    private DataAccessObject<User> dataAccessObject;
+    private UserDao userDao;
     private PasswordEncoder passwordEncoder;
     private TokenService tokenService;
     private UserAuthorization userAuthorization;
 
     @Autowired
     public UserServiceImp(UserDao userDao, PasswordEncoder passwordEncoder,
-                          TokenServiceImp tokenServiceImp, UserAuthorizationImp userAuthorization) {
-        this.dataAccessObject = userDao;
+                          TokenService tokenService, UserAuthorization userAuthorization) {
+        this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
-        this.tokenService = tokenServiceImp;
+        this.tokenService = tokenService;
         this.userAuthorization = userAuthorization;
     }
 
@@ -43,17 +40,17 @@ public class UserServiceImp implements UserService {
     @Deprecated
     public List<User> getAllUsers(String authorizationHeader) {
         String subject = tokenService.getTokenSubject(authorizationHeader);
-        return dataAccessObject.getAll();
+        return userDao.getAll();
     }
 
     public User getByIdUser(Long id) {
-        return dataAccessObject.getById(id);
+        return userDao.getById(id);
     }
 
     public String createUser(User user) {
         String hashPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
-        dataAccessObject.create(user);
+        userDao.create(user);
         return tokenService.getToken(user.getUsername());
     }
 
@@ -71,7 +68,7 @@ public class UserServiceImp implements UserService {
         Files.write(path, bytes, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
         user.setImage(pathToUserDirectory + file.getOriginalFilename());
-        dataAccessObject.update(user);
+        userDao.update(user);
     }
 
     public byte[] getImage(String authorizationHeader) throws IOException {

@@ -6,7 +6,6 @@ import org.todotask.dao.TodoDao;
 import org.todotask.model.Todo;
 import org.todotask.model.User;
 import org.todotask.service.auth.UserAuthorization;
-import org.todotask.service.auth.UserAuthorizationImp;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class TodoServiceImp implements TodoService {
     private UserAuthorization userAuthorization;
 
     @Autowired
-    public TodoServiceImp(TodoDao todoDao, UserAuthorizationImp userAuthorization) {
+    public TodoServiceImp(TodoDao todoDao, UserAuthorization userAuthorization) {
         this.todoDao = todoDao;
         this.userAuthorization = userAuthorization;
     }

@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.todotask.dao.DataAccessObject;
 import org.todotask.dao.UserDao;
+import org.todotask.dao.UserDaoImp;
 import org.todotask.model.User;
 import org.todotask.service.ValuesNotMatchException;
 
@@ -11,20 +12,20 @@ import org.todotask.service.ValuesNotMatchException;
 public class UserAuthorizationImp implements UserAuthorization {
 
     private TokenService tokenService;
-    private DataAccessObject<User> dataAccessObject;
+    private UserDao userDao;
     private PasswordEncoder passwordEncoder;
 
     public UserAuthorizationImp(
-            TokenServiceImp tokenService, UserDao dataAccessObject, PasswordEncoder passwordEncoder
+            TokenService tokenService, UserDao userDao, PasswordEncoder passwordEncoder
     ) {
         this.tokenService = tokenService;
-        this.dataAccessObject = dataAccessObject;
+        this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public String login(String username, String password) throws ValuesNotMatchException {
-        User user = dataAccessObject.getInstanceByName(username);
+        User user = userDao.getInstanceByName(username);
         String s = user.getPassword();
         boolean match = passwordEncoder.matches(password, s);
 
@@ -38,6 +39,6 @@ public class UserAuthorizationImp implements UserAuthorization {
     @Override
     public User getUserByAuthorizationHeader(String authorizationHeader) {
         String usernameFromToken = tokenService.getTokenSubject(authorizationHeader);
-        return dataAccessObject.getInstanceByName(usernameFromToken);
+        return userDao.getInstanceByName(usernameFromToken);
     }
 }

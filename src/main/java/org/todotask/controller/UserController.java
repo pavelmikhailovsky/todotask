@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.todotask.model.User;
 import org.todotask.service.UserService;
-import org.todotask.service.UserServiceImp;
 import org.todotask.service.ValuesNotMatchException;
 import org.todotask.service.auth.UserAuthorization;
-import org.todotask.service.auth.UserAuthorizationImp;
 
 import static org.todotask.controller.SchemaDefaultValue.*;
 
@@ -36,8 +34,8 @@ public class UserController {
     private UserAuthorization userAuthorization;
 
     @Autowired
-    public UserController(UserServiceImp userServiceImp, UserAuthorizationImp userAuthorization) {
-        this.userService = userServiceImp;
+    public UserController(UserService userService, UserAuthorization userAuthorization) {
+        this.userService = userService;
         this.userAuthorization = userAuthorization;
     }
 

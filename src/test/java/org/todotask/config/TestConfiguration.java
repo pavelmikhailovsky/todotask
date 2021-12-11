@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.todotask.dao.UserDao;
+import org.todotask.dao.UserDaoImp;
 
 import javax.sql.DataSource;
 
@@ -30,7 +30,7 @@ public class TestConfiguration {
     }
 
     @Bean
-    public UserDao userDao() {
-        return new UserDao(jdbcTemplate());
+    public UserDaoImp userDao() {
+        return new UserDaoImp(jdbcTemplate());
     }
 }
